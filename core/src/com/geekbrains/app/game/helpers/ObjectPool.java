@@ -1,4 +1,4 @@
-package com.star.app.game.helpers;
+package com.geekbrains.app.game.helpers;
 
 import java.util.ArrayList;
 import java.util.List;

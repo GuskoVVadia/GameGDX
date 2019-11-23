@@ -1,10 +1,9 @@
-package com.star.app.game;
+package com.geekbrains.app.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.star.app.game.helpers.ObjectPool;
-import com.star.app.screen.utils.Assets;
+import com.geekbrains.app.game.helpers.ObjectPool;
+import com.geekbrains.app.screen.utils.Assets;
 
 public class BulletController extends ObjectPool<Bullet> {
     private TextureRegion bulletTexture;

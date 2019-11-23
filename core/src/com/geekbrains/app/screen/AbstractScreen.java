@@ -3,7 +3,6 @@ package com.geekbrains.app.screen;
 import com.badlogic.gdx.Screen;
 
 public abstract class AbstractScreen implements Screen {
-
     @Override
     public void resize(int width, int height) {
     }
@@ -21,7 +20,6 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public void dispose(){
+    public void dispose() {
     }
-
 }

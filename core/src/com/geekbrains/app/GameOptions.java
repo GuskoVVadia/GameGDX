@@ -12,13 +12,13 @@ public class GameOptions {
     //Esc - выход из игры
     public static final boolean FULL_SCREEN = false;
 
-    //звёздам реагировать на пользователя
-    public static final boolean STAR_JOIN_HERO = true;
-
     //скорость полёта корабля
     public static final float SPEED_HERO = 1000.0f;
 
-    //величина межзвёздного пространства по краям игровой области
-    public static final float COEFFSTARSSPACE = 400.0f;
+    //hp астероида привязана к его величине
+    public static final int HP_ASTEROID = 20;
+
+    //определяем количество астероидов.
+    public static final int COUNT_ASTEROIDS = 2;
 
 }

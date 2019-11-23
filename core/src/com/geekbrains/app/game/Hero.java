@@ -2,64 +2,117 @@ package com.geekbrains.app.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
+import com.geekbrains.app.screen.utils.Assets;
 
-public class Hero extends SpaceObject {
+public class Hero {
+    private GameController gc;
+    private TextureRegion texture;
+    private Vector2 position;
+    private Vector2 velocity;
     private float angle;
+    private float fireTimer;
+    private int score;
+    private int scoreView;
+    private boolean rightOrLeftSocket;
 
-    public Hero(GameController gc){
-        super(gc, new Texture("ship.png"),
-                new Vector2(GameOptions.SCREEN_WIDTH / 2, GameOptions.SCREEN_HEIGHT / 2),
-                new Vector2(0, 0));
+    public int getScoreView() {
+        return scoreView;
+    }
+
+    public void addScore(int amount) {
+        this.score += amount;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+    public Hero(GameController gc) {
+        this.gc = gc;
+        this.texture = Assets.getInstance().getAtlas().findRegion("ship");
+        this.position = new Vector2((float) (GameOptions.SCREEN_WIDTH / 2), (float) (GameOptions.SCREEN_HEIGHT / 2));
+        this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
     }
 
-    public void render(SpriteBatch batch){
-        batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64,
-                1, 1, angle, 0, 0, 64, 64, false, false);
+    public void render(SpriteBatch batch) {
+        batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, 1, 1, angle);
     }
 
-    public void update(float dt){
-        if (Gdx.input.isKeyPressed(Input.Keys.A)){
-            angle += 180.0f * dt;
+    public void update(float dt) {
+        fireTimer += dt;
+        if (scoreView < score) {
+            float scoreSpeed = (score - scoreView) / 2.0f;
+            if (scoreSpeed < 2000.0f) {
+                scoreSpeed = 2000.0f;
+            }
+            scoreView += scoreSpeed * dt;
+            if (scoreView > score) {
+                scoreView = score;
+            }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.D)){
-            angle -= 180.0f * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+            if (fireTimer > 0.04f) {
+                fireTimer = 0.0f;
+                float wx = 0.0f, wy = 0.0f;
+                rightOrLeftSocket = !rightOrLeftSocket;
+                if (rightOrLeftSocket) {
+                    wx = position.x + (float) Math.cos(Math.toRadians(angle + 90)) * 25;
+                    wy = position.y + (float) Math.sin(Math.toRadians(angle + 90)) * 25;
+                    gc.getBulletController().setup(wx, wy, (float) Math.cos(Math.toRadians(angle)) * 600 + velocity.x, (float) Math.sin(Math.toRadians(angle)) * 600 + velocity.y, angle);
+                } else {
+                    wx = position.x + (float) Math.cos(Math.toRadians(angle - 90)) * 25;
+                    wy = position.y + (float) Math.sin(Math.toRadians(angle - 90)) * 25;
+                    gc.getBulletController().setup(wx, wy, (float) Math.cos(Math.toRadians(angle)) * 600 + velocity.x, (float) Math.sin(Math.toRadians(angle)) * 600 + velocity.y, angle);
+                }
+            }
         }
-        //добавляем движение назад при нажатии S
-        if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            velocity.x -= (float) Math.cos(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
-            velocity.y -= (float) Math.sin(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            angle += 180.0f * dt;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            angle -= 180.0f * dt;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.x += (float) Math.cos(Math.toRadians(angle)) * GameOptions.SPEED_HERO * dt;
             velocity.y += (float) Math.sin(Math.toRadians(angle)) * GameOptions.SPEED_HERO * dt;
         }
-
+        if (Gdx.input.isKeyPressed(Input.Keys.S)){
+            velocity.x -= (float) Math.cos(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
+            velocity.y -= (float) Math.sin(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
+        }
         position.mulAdd(velocity, dt);
         float stopKoef = 1.0f - 2.0f * dt;
-        if (stopKoef < 0.0f){
+        if (stopKoef < 0.0f) {
             stopKoef = 0.0f;
         }
         velocity.scl(stopKoef);
-
-        if (position.x < 0.0f){
+        if (position.x < 0.0f) {
             position.x = 0.0f;
             velocity.x *= -1;
         }
-        if (position.x > GameOptions.SCREEN_WIDTH){
+        if (position.x > GameOptions.SCREEN_WIDTH) {
             position.x = GameOptions.SCREEN_WIDTH;
             velocity.x *= -1;
         }
-        if (position.y < 0.0f){
+        if (position.y < 0.0f) {
             position.y = 0.0f;
             velocity.y *= -1;
         }
-        if (position.y > GameOptions.SCREEN_HEIGHT){
+        if (position.y > GameOptions.SCREEN_HEIGHT) {
             position.y = GameOptions.SCREEN_HEIGHT;
             velocity.y *= -1;
         }

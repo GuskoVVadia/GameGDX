@@ -1,4 +1,4 @@
-package com.star.app.screen.utils;
+package com.geekbrains.app.screen.utils;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -9,17 +9,16 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
-import com.star.app.screen.ScreenManager;
+import com.geekbrains.app.screen.ScreenManager;
 
 public class Assets {
-    private static final Assets ourInstance = new Assets();
-
-    public static Assets getInstance() {
-        return ourInstance;
-    }
-
+    private static final Assets OUR_INSTANCE = new Assets();
     private AssetManager assetManager;
     private TextureAtlas textureAtlas;
+
+    public static Assets getInstance() {
+        return OUR_INSTANCE;
+    }
 
     public TextureAtlas getAtlas() {
         return textureAtlas;
@@ -57,10 +56,6 @@ public class Assets {
         fontParameter.fontParameters.shadowColor = Color.DARK_GRAY;
         assetManager.load("fonts/font" + size + ".ttf", BitmapFont.class, fontParameter);
     }
-
-//    public void makeLinks() {
-//        textureAtlas = assetManager.get("images/game.pack", TextureAtlas.class);
-//    }
 
     public void clear() {
         assetManager.clear();

@@ -2,60 +2,67 @@ package com.geekbrains.app.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import java.util.ArrayList;
+import com.badlogic.gdx.math.MathUtils;
+import com.geekbrains.app.GameOptions;
 
 public class GameController {
     private Background background;
+    private AsteroidController asteroidController;
+    private BulletController bulletController;
     private Hero hero;
-    private Asteroid asteroid;
-    private ArrayList<SpaceObject> listSO;
-    private CosmosLaw cosmosLaw;
 
-    public GameController() {
-        this.listSO = new ArrayList<>();
-        this.background = new Background(this);
-        this.hero = new Hero(this);
-        this.asteroid = new Asteroid(this);
-        this.cosmosLaw = new CosmosLaw(this);
+    public AsteroidController getAsteroidController() {
+        return asteroidController;
     }
 
-    public Hero getHero() {
-        return hero;
+    public BulletController getBulletController() {
+        return bulletController;
     }
 
     public Background getBackground() {
         return background;
     }
 
-    public Asteroid getAsteroid() {
-        return asteroid;
+    public Hero getHero() {
+        return hero;
     }
 
-    public void addListSO(SpaceObject object){
-        listSO.add(object);
+    public GameController() {
+        this.background = new Background(this);
+        this.hero = new Hero(this);
+        this.asteroidController = new AsteroidController(this);
+        this.bulletController = new BulletController();
+        for (int i = 0; i < GameOptions.COUNT_ASTEROIDS; i++) {
+            this.asteroidController.setup(MathUtils.random(0, GameOptions.SCREEN_WIDTH), MathUtils.random(0, GameOptions.SCREEN_HEIGHT),
+                    MathUtils.random(-150.0f, 150.0f), MathUtils.random(-150.0f, 150.0f), 1.0f);
+        }
     }
 
-    public ArrayList<SpaceObject> getListSO() {
-        return listSO;
-    }
-
-    public void update(float dt){
+    public void update(float dt) {
         background.update(dt);
-        cosmosLaw.update(dt);
-        asteroid.update(dt);
         hero.update(dt);
-
+        asteroidController.update(dt);
+        bulletController.update(dt);
+        checkCollisions();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
     }
 
-    void print(){
-        for (SpaceObject o: listSO){
-            System.out.println(o);
+    public void checkCollisions() {
+        for (int i = 0; i < bulletController.getActiveList().size(); i++) {
+            Bullet b = bulletController.getActiveList().get(i);
+            for (int j = 0; j < asteroidController.getActiveList().size(); j++) {
+                Asteroid a = asteroidController.getActiveList().get(j);
+                if (a.getHitArea().contains(b.getPosition())) {
+                    b.deactivate();
+                    if (a.takeDamage(1)) {
+                        hero.addScore(a.getHpMax() * 100);
+                    }
+                    break;
+                }
+            }
         }
     }
-
-
 }
