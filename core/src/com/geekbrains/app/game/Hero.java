@@ -4,11 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
+import com.geekbrains.app.game.helpers.Strike;
+import com.geekbrains.app.game.helpers.ToDelete;
 import com.geekbrains.app.screen.utils.Assets;
 
-public class Hero {
+public class Hero implements Strike {
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;
@@ -18,6 +21,16 @@ public class Hero {
     private int score;
     private int scoreView;
     private boolean rightOrLeftSocket;
+
+    private boolean active;
+    private Circle hitArea;
+    private int hp;
+    private float currentHp;
+    private float time;
+
+    //размеры корабля, из game.pack
+    private final float BASE_SIZE = 64.0f;
+    private final float BASE_RADIUS = BASE_SIZE / 2.0f;
 
     public int getScoreView() {
         return scoreView;
@@ -39,82 +52,137 @@ public class Hero {
         return velocity;
     }
 
+
     public Hero(GameController gc) {
         this.gc = gc;
         this.texture = Assets.getInstance().getAtlas().findRegion("ship");
         this.position = new Vector2((float) (GameOptions.SCREEN_WIDTH / 2), (float) (GameOptions.SCREEN_HEIGHT / 2));
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
+        this.active = true;
+        this.hp = GameOptions.HP_HERO;
+        this.currentHp = hp;
+        this.hitArea = new Circle(0, 0, 0);
     }
 
     public void render(SpriteBatch batch) {
+        if (active) //добавляем условие активности
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, 1, 1, angle);
     }
 
     public void update(float dt) {
-        fireTimer += dt;
-        if (scoreView < score) {
-            float scoreSpeed = (score - scoreView) / 2.0f;
-            if (scoreSpeed < 2000.0f) {
-                scoreSpeed = 2000.0f;
-            }
-            scoreView += scoreSpeed * dt;
-            if (scoreView > score) {
-                scoreView = score;
+        if (!active){ //проверка
+            time += dt;
+            if (time > 10) {
+                active = true; //добавляю возврат
+                currentHp = GameOptions.HP_HERO / 2;
+                scoreView = 0;
+                score = 0;
             }
         }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.P)) {
-            if (fireTimer > 0.04f) {
-                fireTimer = 0.0f;
-                float wx = 0.0f, wy = 0.0f;
-                rightOrLeftSocket = !rightOrLeftSocket;
-                if (rightOrLeftSocket) {
-                    wx = position.x + (float) Math.cos(Math.toRadians(angle + 90)) * 25;
-                    wy = position.y + (float) Math.sin(Math.toRadians(angle + 90)) * 25;
-                    gc.getBulletController().setup(wx, wy, (float) Math.cos(Math.toRadians(angle)) * 600 + velocity.x, (float) Math.sin(Math.toRadians(angle)) * 600 + velocity.y, angle);
-                } else {
-                    wx = position.x + (float) Math.cos(Math.toRadians(angle - 90)) * 25;
-                    wy = position.y + (float) Math.sin(Math.toRadians(angle - 90)) * 25;
-                    gc.getBulletController().setup(wx, wy, (float) Math.cos(Math.toRadians(angle)) * 600 + velocity.x, (float) Math.sin(Math.toRadians(angle)) * 600 + velocity.y, angle);
+        if (active) { //добавляем условие активности
+            time = 0;
+            fireTimer += dt;
+            if (scoreView < score) {
+                float scoreSpeed = (score - scoreView) / 2.0f;
+                if (scoreSpeed < 2000.0f) {
+                    scoreSpeed = 2000.0f;
+                }
+                scoreView += scoreSpeed * dt;
+                if (scoreView > score) {
+                    scoreView = score;
                 }
             }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+                if (fireTimer > 0.04f) {
+                    fireTimer = 0.0f;
+                    float wx = 0.0f, wy = 0.0f;
+                    rightOrLeftSocket = !rightOrLeftSocket;
+                    if (rightOrLeftSocket) {
+                        wx = position.x + (float) Math.cos(Math.toRadians(angle + 90)) * 25;
+                        wy = position.y + (float) Math.sin(Math.toRadians(angle + 90)) * 25;
+                        gc.getBulletController().setup(wx, wy, (float) Math.cos(Math.toRadians(angle)) * 600 + velocity.x, (float) Math.sin(Math.toRadians(angle)) * 600 + velocity.y, angle);
+                    } else {
+                        wx = position.x + (float) Math.cos(Math.toRadians(angle - 90)) * 25;
+                        wy = position.y + (float) Math.sin(Math.toRadians(angle - 90)) * 25;
+                        gc.getBulletController().setup(wx, wy, (float) Math.cos(Math.toRadians(angle)) * 600 + velocity.x, (float) Math.sin(Math.toRadians(angle)) * 600 + velocity.y, angle);
+                    }
+                }
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                angle += 180.0f * dt;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                angle -= 180.0f * dt;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                velocity.x += (float) Math.cos(Math.toRadians(angle)) * GameOptions.SPEED_HERO * dt;
+                velocity.y += (float) Math.sin(Math.toRadians(angle)) * GameOptions.SPEED_HERO * dt;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                velocity.x -= (float) Math.cos(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
+                velocity.y -= (float) Math.sin(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
+            }
+
+            position.mulAdd(velocity, dt);
+            float stopKoef = 1.0f - 2.0f * dt;
+            if (stopKoef < 0.0f) {
+                stopKoef = 0.0f;
+            }
+            velocity.scl(stopKoef);
+            if (position.x < 0.0f) {
+                position.x = 0.0f;
+                velocity.x *= -1;
+            }
+            if (position.x > GameOptions.SCREEN_WIDTH) {
+                position.x = GameOptions.SCREEN_WIDTH;
+                velocity.x *= -1;
+            }
+            if (position.y < 0.0f) {
+                position.y = 0.0f;
+                velocity.y *= -1;
+            }
+            if (position.y > GameOptions.SCREEN_HEIGHT) {
+                position.y = GameOptions.SCREEN_HEIGHT;
+                velocity.y *= -1;
+            }
+
+            hitArea.setPosition(position);
+            hitArea.setRadius(BASE_RADIUS * 0.9f);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            angle += 180.0f * dt;
+    }
+
+    @Override
+    public Circle getHitArea() {
+        return hitArea;
+    }
+
+    public int getHpCurrent(){
+        hp = (int) currentHp;
+        return hp;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
+    public void deactivate() {
+        this.active = false;
+    }
+
+    public void takeDamage(float value) {
+        if (value > 1){
+            currentHp -= value;
+        }else {
+            currentHp -= 1;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            angle -= 180.0f * dt;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            velocity.x += (float) Math.cos(Math.toRadians(angle)) * GameOptions.SPEED_HERO * dt;
-            velocity.y += (float) Math.sin(Math.toRadians(angle)) * GameOptions.SPEED_HERO * dt;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)){
-            velocity.x -= (float) Math.cos(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
-            velocity.y -= (float) Math.sin(Math.toRadians(angle)) * (GameOptions.SPEED_HERO / 2) * dt;
-        }
-        position.mulAdd(velocity, dt);
-        float stopKoef = 1.0f - 2.0f * dt;
-        if (stopKoef < 0.0f) {
-            stopKoef = 0.0f;
-        }
-        velocity.scl(stopKoef);
-        if (position.x < 0.0f) {
-            position.x = 0.0f;
-            velocity.x *= -1;
-        }
-        if (position.x > GameOptions.SCREEN_WIDTH) {
-            position.x = GameOptions.SCREEN_WIDTH;
-            velocity.x *= -1;
-        }
-        if (position.y < 0.0f) {
-            position.y = 0.0f;
-            velocity.y *= -1;
-        }
-        if (position.y > GameOptions.SCREEN_HEIGHT) {
-            position.y = GameOptions.SCREEN_HEIGHT;
-            velocity.y *= -1;
+
+        if (currentHp <= 0){
+            currentHp = 0;
+            deactivate();
         }
     }
 }

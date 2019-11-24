@@ -7,9 +7,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
 import com.geekbrains.app.game.helpers.Poolable;
+import com.geekbrains.app.game.helpers.Strike;
 import com.geekbrains.app.screen.utils.Assets;
 
-public class Asteroid implements Poolable {
+public class Asteroid implements Poolable, Strike {
     private GameController gc;
     private TextureRegion texture;
     private Vector2 position;
@@ -35,6 +36,10 @@ public class Asteroid implements Poolable {
 
     public Circle getHitArea() {
         return hitArea;
+    }
+
+    public float getScale() {
+        return scale;
     }
 
     @Override
@@ -102,5 +107,28 @@ public class Asteroid implements Poolable {
             position.y = -BASE_RADIUS * scale;
         }
         hitArea.setPosition(position);
+        hitArea.setRadius(BASE_RADIUS * scale * 0.9f);
+
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
+    }
+
+
+    //проблемный блок вычисления столкноввений.
+    public void isStrike(Asteroid otherObj){
+
+        if (this.scale < otherObj.getScale()){
+            float distance = this.position.cpy().sub(otherObj.getPosition().cpy()).len();
+            float sumRadius = this.hitArea.radius + otherObj.getHitArea().radius;
+            float z = sumRadius - distance;
+            System.out.println(z);
+
+            this.velocity.x += (z / 2);
+            this.velocity.y += (z / 2);
+
+
+        }
     }
 }

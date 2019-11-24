@@ -48,6 +48,7 @@ public class GameController {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
+        checkStrike();
     }
 
     public void checkCollisions() {
@@ -61,6 +62,25 @@ public class GameController {
                         hero.addScore(a.getHpMax() * 100);
                     }
                     break;
+                }
+            }
+        }
+    }
+
+    //
+    public void checkStrike(){
+        for (int i = 0; i < asteroidController.getActiveList().size(); i++) {
+            Asteroid a = asteroidController.getActiveList().get(i);
+
+            //обход астероидов  - проверяем на столкновение и на вес
+            for (int j = 0; j < asteroidController.getActiveList().size(); j++) {
+                Asteroid innerA = asteroidController.getActiveList().get(j);
+                if (!a.equals(innerA) && a.getHitArea().overlaps(innerA.getHitArea())){
+                    a.isStrike(innerA);
+                }
+                //столкновение астероида и героя, с уменьшением уровня жизни героя
+                if (innerA.getHitArea().overlaps(hero.getHitArea())){
+                    hero.takeDamage(innerA.getScale());
                 }
             }
         }
