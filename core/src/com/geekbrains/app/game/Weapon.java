@@ -2,6 +2,7 @@ package com.geekbrains.app.game;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.geekbrains.app.game.controllers.GameController;
 
 public class Weapon {
 
@@ -23,6 +24,11 @@ public class Weapon {
 
     public int getMaxBullets() {
         return maxBullets;
+    }
+
+    //добавляем возможность увеличить боезапас
+    public void setMaxBullets(int value) {
+        this.maxBullets += value;
     }
 
     public int getCurBullets() {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
+import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.screen.utils.Assets;
 
 public class Background {

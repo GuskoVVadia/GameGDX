@@ -24,23 +24,44 @@ ship
   orig: 64, 64
   offset: 0, 0
   index: -1
-bullet32
+money
   rotate: false
   xy: 326, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+guns
+  rotate: false
+  xy: 376, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+chest
+  rotate: false
+  xy: 426, 2
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+bullet32
+  rotate: false
+  xy: 260, 68
   size: 64, 32
   orig: 64, 32
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 392, 2
+  xy: 476, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 star16
   rotate: false
-  xy: 326, 36
+  xy: 476, 36
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

@@ -1,6 +1,7 @@
-package com.geekbrains.app.game;
+package com.geekbrains.app.game.controllers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.geekbrains.app.game.Asteroid;
 import com.geekbrains.app.game.helpers.ObjectPool;
 
 public class AsteroidController extends ObjectPool<Asteroid> {

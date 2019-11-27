@@ -1,7 +1,8 @@
-package com.geekbrains.app.game;
+package com.geekbrains.app.game.controllers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.geekbrains.app.game.Bullet;
 import com.geekbrains.app.game.helpers.ObjectPool;
 import com.geekbrains.app.screen.utils.Assets;
 

@@ -2,6 +2,7 @@ package com.geekbrains.app.game;
 
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
+import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.game.helpers.Poolable;
 
 public class Bullet implements Poolable {

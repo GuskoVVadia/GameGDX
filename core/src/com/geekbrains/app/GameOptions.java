@@ -24,4 +24,7 @@ public class GameOptions {
     //количество очков жизни корабля
     public static final int HP_HERO = 100;
 
+    //количество бонусов
+    public static final int BONUS_VALUE = 100;
+
 }

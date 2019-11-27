@@ -1,16 +1,21 @@
-package com.geekbrains.app.game;
+package com.geekbrains.app.game.controllers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
+import com.geekbrains.app.game.Asteroid;
+import com.geekbrains.app.game.Background;
+import com.geekbrains.app.game.Bullet;
+import com.geekbrains.app.game.Hero;
 
 public class GameController {
     private Background background;
     private AsteroidController asteroidController;
     private BulletController bulletController;
     private ParticleController particleController;
+    private BonusController bonusController;
     private Hero hero;
     private Vector2 tmpVec;
 
@@ -20,6 +25,10 @@ public class GameController {
 
     public BulletController getBulletController() {
         return bulletController;
+    }
+
+    public BonusController getBonusController() {
+        return bonusController;
     }
 
     public Background getBackground() {
@@ -40,11 +49,13 @@ public class GameController {
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
         particleController = new ParticleController();
+        this.bonusController = new BonusController(this);
         this.tmpVec = new Vector2(0.0f, 0.0f);
         for (int i = 0; i < GameOptions.COUNT_ASTEROIDS; i++) {
             this.asteroidController.setup(MathUtils.random(0, GameOptions.SCREEN_WIDTH), MathUtils.random(0, GameOptions.SCREEN_HEIGHT),
                     MathUtils.random(-150.0f, 150.0f), MathUtils.random(-150.0f, 150.0f), 1.0f);
         }
+
     }
 
     public void update(float dt) {
@@ -53,6 +64,7 @@ public class GameController {
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);
+        bonusController.update(dt);
         checkCollisions();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {

@@ -1,7 +1,7 @@
 package com.geekbrains.app.screen;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.geekbrains.app.game.GameController;
+import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.game.WorldRenderer;
 import com.geekbrains.app.screen.utils.Assets;
 

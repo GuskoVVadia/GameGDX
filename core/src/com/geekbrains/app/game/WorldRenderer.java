@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.StringBuilder;
+import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.screen.utils.Assets;
 
 public class WorldRenderer {
@@ -28,6 +28,7 @@ public class WorldRenderer {
         gc.getBulletController().render(batch);
         gc.getParticleController().render(batch);
         gc.getHero().renderGUI(batch, font32);
+        gc.getBonusController().render(batch);
         batch.end();
     }
 }

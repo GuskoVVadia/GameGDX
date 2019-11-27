@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.geekbrains.app.GameOptions;
+import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.screen.utils.Assets;
 
 import java.util.ArrayList;
@@ -29,6 +30,22 @@ public class Hero {
     private int scoreView;
     private Circle hitArea;
     private Weapon currentWeapon;
+    //создана переменная для расчёта денег
+    private int money;
+
+    //добавляем возможность увеличить уровень хп аптечкой
+    public void setHp(int value) {
+        this.hp += value;
+    }
+
+    //добавляем сеттер и геттер для изменения количества money
+    public void setMoney(int value) {
+        this.money += value;
+    }
+
+    public int getMoney() {
+        return money;
+    }
 
     public float getAngle() {
         return angle;
@@ -84,6 +101,10 @@ public class Hero {
         );
     }
 
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
+
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, 1, 1, angle);
     }
@@ -93,6 +114,7 @@ public class Hero {
         strBuilder.append("SCORE: ").append(scoreView).append("\n");
         strBuilder.append("HP: ").append(hp).append("\n");
         strBuilder.append("BULLETS: ").append(currentWeapon.getCurBullets()).append(" / ").append(currentWeapon.getMaxBullets()).append("\n");
+        strBuilder.append("MONEY: ").append(money);
         font.draw(batch, strBuilder, 20, 700);
     }
 
