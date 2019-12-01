@@ -1,17 +1,20 @@
 package com.geekbrains.app.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.game.WorldRenderer;
 import com.geekbrains.app.screen.utils.Assets;
 
+import java.security.Key;
+
 public class GameScreen extends AbstractScreen {
     private GameController gameController;
     private WorldRenderer worldRenderer;
-    private SpriteBatch batch;
 
     public GameScreen(SpriteBatch batch) {
-        this.batch = batch;
+        super(batch);
     }
 
     @Override
@@ -25,5 +28,10 @@ public class GameScreen extends AbstractScreen {
     public void render(float delta) {
         gameController.update(delta);
         worldRenderer.render();
+    }
+
+    @Override
+    public void dispose(){
+        gameController.dispose();
     }
 }

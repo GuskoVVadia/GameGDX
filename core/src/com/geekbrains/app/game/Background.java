@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
 import com.geekbrains.app.game.controllers.GameController;
+import com.geekbrains.app.screen.ScreenManager;
 import com.geekbrains.app.screen.utils.Assets;
 
 public class Background {
@@ -16,17 +17,21 @@ public class Background {
         private float scale;
 
         public Star() {
-            this.position = new Vector2(MathUtils.random(-200, GameOptions.SCREEN_WIDTH + 200), MathUtils.random(-200, GameOptions.SCREEN_HEIGHT + 200));
+            this.position = new Vector2(MathUtils.random(-200, ScreenManager.SCREEN_WIDTH + 200), MathUtils.random(-200, ScreenManager.SCREEN_HEIGHT + 200));
             this.velocity = new Vector2(MathUtils.random(-15, -1), 0);
             this.scale = Math.abs(velocity.x) / 15.0f * 0.7f;
         }
 
         public void update(float dt) {
-            position.x += (velocity.x - gc.getHero().getVelocity().x / 10.0f) * dt;
-            position.y += (velocity.y - gc.getHero().getVelocity().y / 10.0f) * dt;
+            if (gc != null) {
+                position.x += (velocity.x - gc.getHero().getVelocity().x / 10.0f) * dt;
+                position.y += (velocity.y - gc.getHero().getVelocity().y / 10.0f) * dt;
+            } else{
+                position.mulAdd(velocity, dt);
+            }
             if (position.x < -200) {
-                position.x = GameOptions.SCREEN_WIDTH + 20;
-                position.y = MathUtils.random(-200, GameOptions.SCREEN_HEIGHT + 200);
+                position.x = ScreenManager.SCREEN_WIDTH + 20;
+                position.y = MathUtils.random(-200, ScreenManager.SCREEN_HEIGHT + 200);
                 velocity.x = MathUtils.random(-15, -1);
                 scale = Math.abs(velocity.x) / 15.0f * 0.7f;
             }
@@ -62,5 +67,9 @@ public class Background {
         for (int i = 0; i < stars.length; i++) {
             stars[i].update(dt);
         }
+    }
+
+    public void dispose(){
+        textureCosmos.dispose();
     }
 }

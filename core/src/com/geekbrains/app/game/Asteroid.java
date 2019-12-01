@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
 import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.game.helpers.Poolable;
+import com.geekbrains.app.screen.ScreenManager;
 import com.geekbrains.app.screen.utils.Assets;
 
 public class Asteroid implements Poolable{
@@ -25,6 +26,8 @@ public class Asteroid implements Poolable{
 
     private final float BASE_SIZE = 256.0f;
     private final float BASE_RADIUS = BASE_SIZE / 2.0f;
+
+
 
     public int getHpMax() {
         return hpMax;
@@ -49,10 +52,6 @@ public class Asteroid implements Poolable{
 
     public void deactivate() {
         active = false;
-        int localValue = MathUtils.random(500);
-        if (localValue > 50){
-            gc.getBonusController().getChance(position);
-        }
     }
 
     public Vector2 getVelocity() {
@@ -106,19 +105,18 @@ public class Asteroid implements Poolable{
         position.mulAdd(velocity, dt);
         angle += rotationSpeed * dt;
         if (position.x < -BASE_RADIUS * scale) {
-            position.x = GameOptions.SCREEN_WIDTH + BASE_RADIUS * scale;
+            position.x = ScreenManager.SCREEN_WIDTH + BASE_RADIUS * scale;
         }
-        if (position.x > GameOptions.SCREEN_WIDTH + BASE_RADIUS * scale) {
+        if (position.x > ScreenManager.SCREEN_WIDTH + BASE_RADIUS * scale) {
             position.x = -BASE_RADIUS * scale;
         }
         if (position.y < -BASE_RADIUS * scale) {
-            position.y = GameOptions.SCREEN_HEIGHT + BASE_RADIUS * scale;
+            position.y = ScreenManager.SCREEN_HEIGHT + BASE_RADIUS * scale;
         }
-        if (position.y > GameOptions.SCREEN_HEIGHT + BASE_RADIUS * scale) {
+        if (position.y > ScreenManager.SCREEN_HEIGHT + BASE_RADIUS * scale) {
             position.y = -BASE_RADIUS * scale;
         }
         hitArea.setPosition(position);
         hitArea.setRadius(BASE_RADIUS * scale * 0.9f);
-
     }
 }

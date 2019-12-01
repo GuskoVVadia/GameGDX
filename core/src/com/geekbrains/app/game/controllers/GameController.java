@@ -5,19 +5,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.GameOptions;
-import com.geekbrains.app.game.Asteroid;
-import com.geekbrains.app.game.Background;
-import com.geekbrains.app.game.Bullet;
-import com.geekbrains.app.game.Hero;
+import com.geekbrains.app.game.*;
+import com.geekbrains.app.screen.ScreenManager;
 
 public class GameController {
     private Background background;
     private AsteroidController asteroidController;
     private BulletController bulletController;
     private ParticleController particleController;
-    private BonusController bonusController;
+    private PowerUpsController powerUpsController;
     private Hero hero;
     private Vector2 tmpVec;
+
+    public PowerUpsController getPowerUpsController() {
+        return powerUpsController;
+    }
 
     public AsteroidController getAsteroidController() {
         return asteroidController;
@@ -25,10 +27,6 @@ public class GameController {
 
     public BulletController getBulletController() {
         return bulletController;
-    }
-
-    public BonusController getBonusController() {
-        return bonusController;
     }
 
     public Background getBackground() {
@@ -48,11 +46,12 @@ public class GameController {
         this.hero = new Hero(this);
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
-        particleController = new ParticleController();
-        this.bonusController = new BonusController(this);
+        this.particleController = new ParticleController();
+        this.powerUpsController = new PowerUpsController(this);
+
         this.tmpVec = new Vector2(0.0f, 0.0f);
         for (int i = 0; i < GameOptions.COUNT_ASTEROIDS; i++) {
-            this.asteroidController.setup(MathUtils.random(0, GameOptions.SCREEN_WIDTH), MathUtils.random(0, GameOptions.SCREEN_HEIGHT),
+            this.asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH), MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
                     MathUtils.random(-150.0f, 150.0f), MathUtils.random(-150.0f, 150.0f), 1.0f);
         }
 
@@ -64,7 +63,7 @@ public class GameController {
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);
-        bonusController.update(dt);
+        powerUpsController.update(dt);
         checkCollisions();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -113,10 +112,24 @@ public class GameController {
                     b.deactivate();
                     if (a.takeDamage(1)) {
                         hero.addScore(a.getHpMax() * 100);
+                        for (int k = 0; k < 3; k++) {
+                            powerUpsController.setup(a.getPosition().x, a.getPosition().y, a.getScale() / 3.0f);
+                        }
                     }
                     break;
                 }
             }
         }
+        for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
+            PowerUp p = powerUpsController.getActiveList().get(i);
+            if (hero.getHitArea().contains(p.getPosition())){
+                hero.consume(p);
+                particleController.getEffectBuilder().takePowerUpEffect(p.getPosition().x, p.getPosition().y);
+                p.deactivate();
+            }
+        }
+    }
+    public void dispose(){
+        background.dispose();
     }
 }

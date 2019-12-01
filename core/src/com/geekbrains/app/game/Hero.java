@@ -10,8 +10,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.geekbrains.app.GameOptions;
 import com.geekbrains.app.game.controllers.GameController;
+import com.geekbrains.app.screen.ScreenManager;
 import com.geekbrains.app.screen.utils.Assets;
 
 import java.util.ArrayList;
@@ -30,22 +30,7 @@ public class Hero {
     private int scoreView;
     private Circle hitArea;
     private Weapon currentWeapon;
-    //создана переменная для расчёта денег
     private int money;
-
-    //добавляем возможность увеличить уровень хп аптечкой
-    public void setHp(int value) {
-        this.hp += value;
-    }
-
-    //добавляем сеттер и геттер для изменения количества money
-    public void setMoney(int value) {
-        this.money += value;
-    }
-
-    public int getMoney() {
-        return money;
-    }
 
     public float getAngle() {
         return angle;
@@ -180,16 +165,16 @@ public class Hero {
             position.x = hitArea.radius;
             velocity.x *= -1;
         }
-        if (position.x > GameOptions.SCREEN_WIDTH - hitArea.radius) {
-            position.x = GameOptions.SCREEN_WIDTH - hitArea.radius;
+        if (position.x > ScreenManager.SCREEN_WIDTH - hitArea.radius) {
+            position.x = ScreenManager.SCREEN_WIDTH - hitArea.radius;
             velocity.x *= -1;
         }
         if (position.y < hitArea.radius) {
             position.y = hitArea.radius;
             velocity.y *= -1;
         }
-        if (position.y > GameOptions.SCREEN_HEIGHT - hitArea.radius) {
-            position.y = GameOptions.SCREEN_HEIGHT - hitArea.radius;
+        if (position.y > ScreenManager.SCREEN_HEIGHT - hitArea.radius) {
+            position.y = ScreenManager.SCREEN_HEIGHT - hitArea.radius;
             velocity.y *= -1;
         }
     }
@@ -204,6 +189,20 @@ public class Hero {
             if (scoreView > score) {
                 scoreView = score;
             }
+        }
+    }
+
+    public void consume(PowerUp p){
+        switch (p.getType()){
+            case MEDKIT:
+                hp += p.getPower();
+                break;
+            case AMMOS:
+                currentWeapon.addAmmos(p.getPower());
+                break;
+            case MONEY:
+                money += p.getPower();
+                break;
         }
     }
 }

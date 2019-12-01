@@ -26,13 +26,15 @@ public class Weapon {
         return maxBullets;
     }
 
-    //добавляем возможность увеличить боезапас
-    public void setMaxBullets(int value) {
-        this.maxBullets += value;
-    }
-
     public int getCurBullets() {
         return curBullets;
+    }
+
+    public void addAmmos(int amount){
+        curBullets += amount;
+        if (curBullets > maxBullets){
+            curBullets = maxBullets;
+        }
     }
 
     public Weapon(GameController gc, Hero hero, String title, float firePeriod, int damage, float bulletSpeed, int maxBullets, Vector3[] slots) {
