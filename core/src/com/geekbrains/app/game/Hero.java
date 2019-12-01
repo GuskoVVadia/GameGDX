@@ -65,7 +65,7 @@ public class Hero {
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
         this.enginePower = 750.0f;
-        this.hp = 100;
+        this.hp = 150;    //изменить
         this.strBuilder = new StringBuilder();
         this.hitArea = new Circle(position, 26.0f);
 
@@ -151,6 +151,10 @@ public class Hero {
 
     public void takeDamage(int amount) {
         hp -= amount;
+        if (hp <= 0){
+            ScreenManager.getInstance().getOverScreen().addHeroStatics(this.score, this.money, this.hp);
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.OVER);
+        }
     }
 
     public void tryToFire() {

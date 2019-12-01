@@ -23,7 +23,7 @@ public class ScreenManager {
     public static final int HALF_SCREEN_HEIGHT = SCREEN_HEIGHT / 2;
 
     public enum ScreenType {
-        MENU, GAME
+        MENU, GAME, OVER
     }
 
         private SpaceProject game;
@@ -31,11 +31,16 @@ public class ScreenManager {
         private LoadingScreen loadingScreen;
         private GameScreen gameScreen;
         private MenuScreen menuScreen;
+        private GameOverScreen overScreen;
         private Screen targetScreen;
         private Viewport viewport;
         private Camera camera;
 
-        private static ScreenManager ourInstance = new ScreenManager();
+    public GameOverScreen getOverScreen() {
+        return overScreen;
+    }
+
+    private static ScreenManager ourInstance = new ScreenManager();
 
         public static ScreenManager getInstance() {
             return ourInstance;
@@ -59,6 +64,7 @@ public class ScreenManager {
             this.viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
             this.gameScreen = new GameScreen(batch);
             this.menuScreen = new MenuScreen(batch);
+            this.overScreen = new GameOverScreen(batch);
             this.loadingScreen = new LoadingScreen(batch);
         }
 
@@ -89,6 +95,10 @@ public class ScreenManager {
                 case MENU:
                     targetScreen = menuScreen;
                     Assets.getInstance().loadAssets(ScreenType.MENU);
+                    break;
+                case OVER:
+                    targetScreen = overScreen;
+                    Assets.getInstance().loadAssets(ScreenType.OVER);
                     break;
             }
         }

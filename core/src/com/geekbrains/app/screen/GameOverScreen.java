@@ -10,40 +10,45 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.geekbrains.app.game.Background;
+import com.badlogic.gdx.utils.StringBuilder;
 import com.geekbrains.app.screen.utils.Assets;
 
-public class MenuScreen extends AbstractScreen{
-    private Background background;
-    private BitmapFont font72;
-    private BitmapFont font24;
-    private Stage stage;
 
-    public MenuScreen(SpriteBatch batch){
+public class GameOverScreen extends AbstractScreen{
+
+    private BitmapFont font72;
+    private BitmapFont font16;
+    private StringBuilder stringBuilder;
+    private Stage stage;
+    private int heroHP;
+    private int heroMoney;
+    private int heroScore;
+
+
+    public GameOverScreen (SpriteBatch batch){
         super(batch);
+        this.stringBuilder = new StringBuilder();
     }
 
     @Override
     public void show() {
-        this.background = new Background(null);
+        Assets.getInstance().makeLinks();
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
-        this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
+        this.font16 = Assets.getInstance().getAssetManager().get("fonts/font16.ttf");
 
         Gdx.input.setInputProcessor(stage);
 
-        Skin skin = new Skin();
-        skin.addRegions(Assets.getInstance().getAtlas());
+        Skin skins = new Skin();
+        skins.addRegions(Assets.getInstance().getAtlas());
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("simpleButton");
-        textButtonStyle.font = font24;
-        skin.add("simpleSkin", textButtonStyle);
+        textButtonStyle.up = skins.getDrawable("simpleButton");
+        textButtonStyle.font = font16;
+        skins.add("simpleSkin", textButtonStyle);
 
         Button btnNewGame = new TextButton("New Game", textButtonStyle);
-        Button btnExitGame = new TextButton("Exit Game", textButtonStyle);
         btnNewGame.setPosition(480, 210);
-        btnExitGame.setPosition(480, 110);
 
         btnNewGame.addListener(new ChangeListener() {
             @Override
@@ -52,22 +57,18 @@ public class MenuScreen extends AbstractScreen{
             }
         });
 
-        btnExitGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                Gdx.app.exit();
-            }
-        });
-
-
         stage.addActor(btnNewGame);
-        stage.addActor(btnExitGame);
-        skin.dispose();
+        skins.dispose();
     }
 
     public void update(float dt){
-        background.update(dt);
         stage.act(dt);
+    }
+
+    public void addHeroStatics(int score, int money, int hp) {
+        this.heroScore = score;
+        this.heroMoney = money;
+        this.heroHP = hp;
     }
 
     @Override
@@ -76,14 +77,21 @@ public class MenuScreen extends AbstractScreen{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        background.render(batch);
+
+        stringBuilder.clear();
+        stringBuilder.append("Statistics: ").append("\n");
+        stringBuilder.append("Score: ").append(heroScore).append("\n");
+        stringBuilder.append("Money: ").append(heroMoney).append("\n");
+        stringBuilder.append("HP: ").append(heroHP).append("\n");
+        font16.draw(batch, stringBuilder, 200, 600);
         font72.draw(batch, "Star Game 2020", 0, 600, ScreenManager.SCREEN_WIDTH, 1, false);
+
         batch.end();
         stage.draw();
     }
 
     @Override
-    public void dispose(){
-        background.dispose();
+    public void dispose() {
     }
+
 }
