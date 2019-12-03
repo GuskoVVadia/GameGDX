@@ -1,9 +1,9 @@
 package com.geekbrains.app.game;
 
 import com.badlogic.gdx.math.Vector2;
-import com.geekbrains.app.GameOptions;
 import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.game.helpers.Poolable;
+import com.geekbrains.app.screen.ScreenManager;
 
 public class Bullet implements Poolable {
     private GameController gc;
@@ -49,7 +49,7 @@ public class Bullet implements Poolable {
 
     public void update(float dt) {
         position.mulAdd(velocity, dt);
-        if (position.x < 0.0f || position.x > GameOptions.SCREEN_WIDTH || position.y < 0.0f || position.y > GameOptions.SCREEN_HEIGHT) {
+        if (position.x < 0.0f || position.x > ScreenManager.SCREEN_WIDTH || position.y < 0.0f || position.y > ScreenManager.SCREEN_HEIGHT) {
             deactivate();
         }
     }

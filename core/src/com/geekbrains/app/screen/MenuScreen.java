@@ -1,6 +1,7 @@
 package com.geekbrains.app.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -9,28 +10,24 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.geekbrains.app.game.controllers.GameController;
-import com.geekbrains.app.game.WorldRenderer;
+import com.geekbrains.app.game.Background;
 import com.geekbrains.app.screen.utils.Assets;
 
-public class GameScreen extends AbstractScreen {
-    private GameController gameController;
-    private WorldRenderer worldRenderer;
+public class MenuScreen extends AbstractScreen{
+    private Background background;
+    private BitmapFont font72;
     private BitmapFont font24;
     private Stage stage;
-    private boolean active;
 
-    public GameScreen(SpriteBatch batch) {
+    public MenuScreen(SpriteBatch batch){
         super(batch);
-        this.active = true;
     }
 
     @Override
     public void show() {
-        Assets.getInstance().loadAssets(ScreenManager.ScreenType.GAME);
-        this.gameController = new GameController();
-        this.worldRenderer = new WorldRenderer(gameController, batch);
+        this.background = new Background(null);
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
 
         Gdx.input.setInputProcessor(stage);
@@ -39,54 +36,54 @@ public class GameScreen extends AbstractScreen {
         skin.addRegions(Assets.getInstance().getAtlas());
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("smButton");
+        textButtonStyle.up = skin.getDrawable("simpleButton");
         textButtonStyle.font = font24;
         skin.add("simpleSkin", textButtonStyle);
 
-        Button btnPauseGame = new TextButton("Pause", textButtonStyle);
-        Button btnMenuGame = new TextButton("Menu", textButtonStyle);
-        btnPauseGame.setPosition(1000, 650);
-        btnMenuGame.setPosition(1000, 600);
+        Button btnNewGame = new TextButton("New Game", textButtonStyle);
+        Button btnExitGame = new TextButton("Exit Game", textButtonStyle);
+        btnNewGame.setPosition(480, 210);
+        btnExitGame.setPosition(480, 110);
 
-        btnPauseGame.addListener(new ChangeListener() {
+        btnNewGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getChangeState();
+                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
             }
         });
 
-        btnMenuGame.addListener(new ChangeListener() {
+        btnExitGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
+                Gdx.app.exit();
             }
         });
 
-        stage.addActor(btnPauseGame);
-        stage.addActor(btnMenuGame);
+
+        stage.addActor(btnNewGame);
+        stage.addActor(btnExitGame);
         skin.dispose();
+    }
+
+    public void update(float dt){
+        background.update(dt);
+        stage.act(dt);
     }
 
     @Override
     public void render(float delta) {
         update(delta);
-        if (active) {
-            gameController.update(delta);
-            worldRenderer.render();
-        }
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+        background.render(batch);
+        font72.draw(batch, "Star Game 2020", 0, 600, ScreenManager.SCREEN_WIDTH, 1, false);
+        batch.end();
         stage.draw();
     }
 
     @Override
     public void dispose(){
-        gameController.dispose();
-    }
-
-    public void getChangeState(){
-        this.active = !active;
-    }
-
-    public void update(float delta){
-        stage.act(delta);
+        background.dispose();
     }
 }
