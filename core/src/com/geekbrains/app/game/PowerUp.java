@@ -7,7 +7,7 @@ import com.geekbrains.app.game.helpers.Poolable;
 
 public class PowerUp implements Poolable {
     public enum Type {
-        MEDKIT(0), MONEY(1), AMMOS(2);
+        MEDKIT(2), MONEY(0), AMMOS(1);
 
         public int index;
 
