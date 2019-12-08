@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.geekbrains.app.game.Background;
 import com.geekbrains.app.screen.utils.Assets;
 
@@ -42,8 +43,8 @@ public class MenuScreen extends AbstractScreen{
 
         Button btnNewGame = new TextButton("New Game", textButtonStyle);
         Button btnExitGame = new TextButton("Exit Game", textButtonStyle);
-        btnNewGame.setPosition(480, 210);
-        btnExitGame.setPosition(480, 110);
+        btnNewGame.setPosition(ScreenManager.HALF_SCREEN_WIDTH - btnNewGame.getWidth() / 2, ScreenManager.HALF_SCREEN_HEIGHT - 200);
+        btnExitGame.setPosition(ScreenManager.HALF_SCREEN_WIDTH - btnExitGame.getWidth() / 2, ScreenManager.HALF_SCREEN_HEIGHT - 300);
 
         btnNewGame.addListener(new ChangeListener() {
             @Override
@@ -63,6 +64,7 @@ public class MenuScreen extends AbstractScreen{
         stage.addActor(btnNewGame);
         stage.addActor(btnExitGame);
         skin.dispose();
+
     }
 
     public void update(float dt){
@@ -77,7 +79,7 @@ public class MenuScreen extends AbstractScreen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.render(batch);
-        font72.draw(batch, "Star Game 2020", 0, 600, ScreenManager.SCREEN_WIDTH, 1, false);
+        font72.draw(batch, "Star Game 2020", 0, ScreenManager.HALF_SCREEN_HEIGHT, ScreenManager.SCREEN_WIDTH, Align.center, false);
         batch.end();
         stage.draw();
     }

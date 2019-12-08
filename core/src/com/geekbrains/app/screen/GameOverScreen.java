@@ -1,74 +1,45 @@
 package com.geekbrains.app.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.geekbrains.app.game.Background;
+import com.geekbrains.app.game.Hero;
 import com.geekbrains.app.screen.utils.Assets;
 
-
 public class GameOverScreen extends AbstractScreen{
-
+    private Background background;
     private BitmapFont font72;
-    private BitmapFont font16;
+    private BitmapFont font24;
+    private Hero defeatedHero;
     private StringBuilder stringBuilder;
-    private Stage stage;
-    private int heroHP;
-    private int heroMoney;
-    private int heroScore;
 
+    public void setDefeatedHero(Hero defeatedHero) {
+        this.defeatedHero = defeatedHero;
+    }
 
-    public GameOverScreen (SpriteBatch batch){
+    public GameOverScreen(SpriteBatch batch){
         super(batch);
         this.stringBuilder = new StringBuilder();
     }
 
     @Override
     public void show() {
-        Assets.getInstance().makeLinks();
-        this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        this.background = new Background(null);
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
-        this.font16 = Assets.getInstance().getAssetManager().get("fonts/font16.ttf");
+        this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
 
-        Gdx.input.setInputProcessor(stage);
-
-        Skin skins = new Skin();
-        skins.addRegions(Assets.getInstance().getAtlas());
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skins.getDrawable("simpleButton");
-        textButtonStyle.font = font16;
-        skins.add("simpleSkin", textButtonStyle);
-
-        Button btnNewGame = new TextButton("New Game", textButtonStyle);
-        btnNewGame.setPosition(480, 210);
-
-        btnNewGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
-            }
-        });
-
-        stage.addActor(btnNewGame);
-        skins.dispose();
     }
 
     public void update(float dt){
-        stage.act(dt);
-    }
-
-    public void addHeroStatics(int score, int money, int hp) {
-        this.heroScore = score;
-        this.heroMoney = money;
-        this.heroHP = hp;
+        background.update(dt);
+        if (Gdx.input.isButtonPressed(Input.Keys.M)){
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
+        }
     }
 
     @Override
@@ -77,21 +48,17 @@ public class GameOverScreen extends AbstractScreen{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-
+        background.render(batch);
+        font72.draw(batch, "Game Over", 0, 600, ScreenManager.SCREEN_WIDTH, Align.center, false);
         stringBuilder.clear();
-        stringBuilder.append("Statistics: ").append("\n");
-        stringBuilder.append("Score: ").append(heroScore).append("\n");
-        stringBuilder.append("Money: ").append(heroMoney).append("\n");
-        stringBuilder.append("HP: ").append(heroHP).append("\n");
-        font16.draw(batch, stringBuilder, 200, 600);
-        font72.draw(batch, "Star Game 2020", 0, 600, ScreenManager.SCREEN_WIDTH, 1, false);
+        stringBuilder.append("Score: ").append(defeatedHero.getScore()).append("\n");
+        font24.draw(batch, stringBuilder, 200, 500);
 
         batch.end();
-        stage.draw();
     }
 
     @Override
-    public void dispose() {
+    public void dispose(){
+        background.dispose();
     }
-
 }

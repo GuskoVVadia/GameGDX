@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.geekbrains.app.SpaceProject;
+import com.geekbrains.app.game.Hero;
 import com.geekbrains.app.screen.utils.Assets;
 
 public class ScreenManager {
@@ -23,7 +24,7 @@ public class ScreenManager {
     public static final int HALF_SCREEN_HEIGHT = SCREEN_HEIGHT / 2;
 
     public enum ScreenType {
-        MENU, GAME, OVER
+        MENU, GAME, GAMEOVER
     }
 
         private SpaceProject game;
@@ -31,14 +32,10 @@ public class ScreenManager {
         private LoadingScreen loadingScreen;
         private GameScreen gameScreen;
         private MenuScreen menuScreen;
-        private GameOverScreen overScreen;
+        private GameOverScreen gameOverScreen;
         private Screen targetScreen;
         private Viewport viewport;
         private Camera camera;
-
-    public GameOverScreen getOverScreen() {
-        return overScreen;
-    }
 
     private static ScreenManager ourInstance = new ScreenManager();
 
@@ -64,8 +61,8 @@ public class ScreenManager {
             this.viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
             this.gameScreen = new GameScreen(batch);
             this.menuScreen = new MenuScreen(batch);
-            this.overScreen = new GameOverScreen(batch);
             this.loadingScreen = new LoadingScreen(batch);
+            this.gameOverScreen = new GameOverScreen(batch);
         }
 
         public void resize(int width, int height) {
@@ -79,7 +76,7 @@ public class ScreenManager {
             batch.setProjectionMatrix(camera.combined);
         }
 
-        public void changeScreen(ScreenType type) {
+        public void changeScreen(ScreenType type, Object ... args) {
             Screen screen = game.getScreen();
             Assets.getInstance().clear();
             if (screen != null) {
@@ -96,9 +93,10 @@ public class ScreenManager {
                     targetScreen = menuScreen;
                     Assets.getInstance().loadAssets(ScreenType.MENU);
                     break;
-                case OVER:
-                    targetScreen = overScreen;
-                    Assets.getInstance().loadAssets(ScreenType.OVER);
+                case GAMEOVER:
+                    targetScreen = gameOverScreen;
+                    gameOverScreen.setDefeatedHero((Hero) args[0]);
+                    Assets.getInstance().loadAssets(ScreenType.GAMEOVER);
                     break;
             }
         }
