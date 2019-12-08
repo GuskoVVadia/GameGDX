@@ -28,7 +28,7 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         Assets.getInstance().loadAssets(ScreenManager.ScreenType.GAME);
-        this.gameController = new GameController();
+        this.gameController = new GameController(batch);
         this.worldRenderer = new WorldRenderer(gameController, batch);
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
@@ -72,8 +72,8 @@ public class GameScreen extends AbstractScreen {
         update(delta);
         if (active) {
             gameController.update(delta);
-            worldRenderer.render();
         }
+        worldRenderer.render();
         stage.draw();
     }
 

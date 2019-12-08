@@ -1,5 +1,6 @@
 package com.geekbrains.app.game;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.geekbrains.app.game.controllers.GameController;
 import com.geekbrains.app.game.helpers.Poolable;
@@ -16,10 +17,6 @@ public class Bullet implements Poolable {
         return position;
     }
 
-    public Vector2 getVelocity() {
-        return velocity;
-    }
-
     public float getAngle() {
         return angle;
     }
@@ -27,6 +24,10 @@ public class Bullet implements Poolable {
     @Override
     public boolean isActive() {
         return active;
+    }
+
+    public Vector2 getVelocity() {
+        return velocity;
     }
 
     public void deactivate() {
@@ -49,6 +50,14 @@ public class Bullet implements Poolable {
 
     public void update(float dt) {
         position.mulAdd(velocity, dt);
+        gc.getParticleController().setup(
+                position.x + MathUtils.random(-4, 4), position.y + MathUtils.random(-4, 4),
+                velocity.x * -0.3f + MathUtils.random(-20, 20), velocity.y * -0.3f + MathUtils.random(-20, 20),
+                0.2f,
+                1.2f, 0.2f,
+                1.0f, 0.0f, 0.0f, 1.0f,
+                1.0f, 1.0f, 0.0f, 0.0f
+        );
         if (position.x < 0.0f || position.x > ScreenManager.SCREEN_WIDTH || position.y < 0.0f || position.y > ScreenManager.SCREEN_HEIGHT) {
             deactivate();
         }
