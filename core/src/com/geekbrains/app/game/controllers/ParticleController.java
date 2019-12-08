@@ -11,7 +11,6 @@ import com.geekbrains.app.screen.utils.Assets;
 public class ParticleController extends ObjectPool<Particle> {
 
     public class EffectBuilder {
-
         public void buildMonsterSplash(float x, float y) {
             for (int i = 0; i < 15; i++) {
                 float randomAngle = MathUtils.random(0, 6.28f);
@@ -21,6 +20,7 @@ public class ParticleController extends ObjectPool<Particle> {
         }
 
         public void takePowerUpEffect(float x, float y, int index) {
+            // MONEY(0) blue, AMMOS(1) red, MEDKIT(2) green;
             switch (index) {
                 case 0:
                     for (int i = 0; i < 16; i++) {
@@ -41,6 +41,7 @@ public class ParticleController extends ObjectPool<Particle> {
                     }
                     break;
             }
+
         }
     }
 

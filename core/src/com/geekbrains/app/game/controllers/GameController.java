@@ -11,7 +11,7 @@ import com.geekbrains.app.screen.ScreenManager;
 import static java.lang.Math.*;
 
 public class GameController {
-    private int level;
+//    private int level;
     private Background background;
     private AsteroidController asteroidController;
     private BulletController bulletController;
@@ -59,7 +59,7 @@ public class GameController {
         this.tmpVec = new Vector2(0.0f, 0.0f);
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.stage.addActor(hero.getShop());
-        this.level = 1;
+//        this.level = 1;
         Gdx.input.setInputProcessor(stage);
         for (int i = 0; i < 2; i++) {
             this.asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH), MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
@@ -82,8 +82,6 @@ public class GameController {
     }
 
     public void hit(Hero h, Asteroid a) {
-        // h - 1
-        // a - 2
         float v1 = h.getVelocity().len();
         float v2 = a.getVelocity().len();
 

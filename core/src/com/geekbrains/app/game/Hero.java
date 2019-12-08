@@ -15,6 +15,7 @@ import com.geekbrains.app.screen.ScreenManager;
 import com.geekbrains.app.screen.utils.Assets;
 
 public class Hero {
+
     public class Skill {
         private int level;
         private int maxLevel;
@@ -142,11 +143,6 @@ public class Hero {
                         new Vector3(24, 90, 0),
                         new Vector3(24, -90, 0)
                 }
-//                new Vector3[]{
-//                        new Vector3(28, 0, 0),
-//                        new Vector3(28, 90, 20),
-//                        new Vector3(28, -90, -20)
-//                }
         );
     }
 
@@ -161,31 +157,31 @@ public class Hero {
         strBuilder.append("MONEY: ").append(money).append("\n");
         strBuilder.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
         strBuilder.append("BULLETS: ").append(currentWeapon.getCurBullets()).append(" / ").append(currentWeapon.getMaxBullets()).append("\n");
-        font.draw(batch, strBuilder, 20, 1060);
+        font.draw(batch, strBuilder, 20, ScreenManager.SCREEN_HEIGHT);
     }
 
     public void update(float dt) {
         fireTimer += dt;
         updateScore(dt);
 
-        if (Gdx.input.isButtonPressed(Input.Keys.P)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.P)) {
             tryToFire();
         }
-        if (Gdx.input.isButtonPressed(Input.Keys.A)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             angle += 180.0f * dt;
         }
-        if (Gdx.input.isButtonPressed(Input.Keys.D)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             angle -= 180.0f * dt;
         }
-        if (Gdx.input.isButtonPressed(Input.Keys.W)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             velocity.x += (float) Math.cos(Math.toRadians(angle)) * enginePower * dt;
             velocity.y += (float) Math.sin(Math.toRadians(angle)) * enginePower * dt;
         }
-        if (Gdx.input.isButtonPressed(Input.Keys.S)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             velocity.x -= (float) Math.cos(Math.toRadians(angle)) * enginePower * dt / 2.0f;
             velocity.y -= (float) Math.sin(Math.toRadians(angle)) * enginePower * dt / 2.0f;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.U)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.U)) {
             shop.setVisible(true);
         }
         position.mulAdd(velocity, dt);
@@ -289,7 +285,6 @@ public class Hero {
                         () -> hpMax += 40,
                         () -> hpMax += 50,
                         () -> hpMax += 50
-
                 },
                 new int[]{
                         10,
