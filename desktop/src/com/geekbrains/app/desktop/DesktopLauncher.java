@@ -2,7 +2,6 @@ package com.geekbrains.app.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.geekbrains.app.GameOptions;
 import com.geekbrains.app.SpaceProject;
 import com.geekbrains.app.screen.ScreenManager;
 

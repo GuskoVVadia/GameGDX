@@ -77,9 +77,6 @@ public class Hero {
         this.currentWeapon = new Weapon(
                 gc, this, "Laser", 0.2f, 1, 600.0f, 100,
                 new Vector3[]{
-//                        new Vector3(28, 0, 0),
-//                        new Vector3(28, 90, 90),
-//                        new Vector3(28, -90, -90)
                         new Vector3(28, 90, 0),
                         new Vector3(28, -90, 0)
                 }
